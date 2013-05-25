@@ -1,0 +1,152 @@
+.TH MS 6 LOCAL
+
+.SH NAME
+
+ms -- store and view messages to yourself
+
+.SH SYNOPSIS
+
+.B ms [-hvlsdwbreftnpk#u] [
+.I
+message 
+[SMHdwmy]]
+
+.SH AVAILABILITY
+ms is known to work on OS X and Ubuntu and presumed to work on other UNIX workalikes.
+
+.SH DESCRIPTION
+
+ms allows the user to store and view a list of messages.  If invoked with no arguments, the program simply displays the messages, which appear in the order they were received.  To create a message, include it as an argument to ms, followed by an optional string specifying how long the message should be held.  If no time is specified, messages are held for one day.  By default, expired messages are displayed prior to deletion.
+
+.SH RECOMMENDED USE
+ms is designed for managing todo lists.  Call it from your login script to remind yourself of important tasks.
+
+.SH OPTIONS
+
+.TP
+-h
+Display the help screen, which contains a list of options and time codes.  By default this option will prevent the program from displaying the messages.
+
+.TP
+-v
+Display the program's version.  By default this option will prevent the program from displaying the messages.
+
+.TP
+-l
+Invoke the program in loquacious mode.  This means that the program will give a confirmation upon creating a message.  The confirmation will contain the expiration date for the message.  When deleting messages, this mode will cause the program to display and number the messages as well.  By default, displaying the messages this way will not allow expired messages to be removed.
+
+.TP
+-s
+Invoke the program in silent mode.  Nullifies -l.
+
+.TP
+-d
+Display messages.  Certain arguments suppress the messages by default.  Also, if a message is being created, by default the existing messages aren't displayed.  This option causes the program to display them anyway.  Messages are displayed after inserting the new message, so when you created a new message you'll see it in place when you run this option.
+
+.TP
+-w
+Withhold messages.  Nullifies -d.
+
+.TP
+-b
+Draw a banner above and below the program's output.  Only normal output is guaranteed to appear inside of the banner, meaning that error messages will appear above the banner if the banner is generated at all.  If the program doesn't generate any normal output, only the top banner will be drawn.
+
+.TP
+-r
+Retain expired messages.
+
+.TP
+-e
+Allow expired messages to be removed in cases where they otherwise would be retained.
+
+.TP
+-f
+Use forgiveness.  If this is enabled, the program will ignore bad options and extra arguments and just do everything it is able to understand based on the input.  Note that this only applies to option flags.  An expiration date containing unknown characters is considered unrecoverable.
+
+.TP
+-t
+Be tough.  No forgiveness.
+
+.TP
+-n
+Print out messages with numbers indicating the order in which they're stored.  The purpose of the numbers is to allow the user to delete messages, so numbers will not be given for messages that are currently being deleted.  Instead, these messages will be marked with a "del" for "delete".
+
+.TP
+-p
+Print out messages plain, i.e. with no numbers.
+
+.TP
+-kN
+Kill the Nth message stored.  Messages are indexed from 1 and their numbers can be viewed using the -n option.  This option supresses message output by default.  If you enter a message in the same session, note that the message is added before the deletions are performed.  So it is possible for you to delete a message at the same time as writing it, if you wanted to for some reason.
+
+.TP
+-u
+There are no more option flags and the next argument is unequivocally meant to be interpereted as the message to be stored.  Use this if the message begins with a '-'.
+
+.SH TIME FORMAT
+Time codes may be written in any combination and may be preceded by an optional integer multiplier.  If a unit of time isn not preceded by a multiplier, one such unit is added.  If a multiplier appears but isn not followed by a unit, the unit is presumed to be a day.  Months and years are computed according to the calendar and are not of fixed length.  All smaller units do have fixed lengths which are computed in terms of seconds.  The fixed length time is added before the non-fixed length time.
+
+.TP
+S
+second
+
+.TP
+M
+minute = 60 seconds
+
+.TP
+H
+hour = 60 minutes
+
+.TP
+d
+day = 24 hours
+
+.TP
+w
+week = 7 days
+
+.TP
+m
+(calendar) month (accounts for differing lengths)
+
+.TP
+y
+(calendar) year (accounts for leap years)
+
+.SH EXAMPLES
+
+.TP
+ms -k2 "trab pu kcip"
+Deletes the second message stored (if there is one) and stores the message "trab pu kcip" for one day.  If "trab pu kcip" turns out to be the second message, it will be deleted.
+
+.TP
+ms -u "--Graduate college--" 4y
+Stores the message "--Graduate college--" for 4 years.
+
+.TP
+ms -bnd "Rosemary's baby shower" 13d6H6M6S
+Stores the message "Rosemary's baby shower" for 13 days, 6 hours, 6 minutes and 6 seconds, then it numbers and displays all the messages that have been stored and surrounds them with a lovely border.
+
+.TP
+ms "Only \\$19.95 . . . But wait--there's more\\!\\!\\!" 25S
+Stores the message "Only $19.95 . . . But wait--there's more!!!" for 25 seconds.  Note the escaped characters.
+
+.SH BUGS
+If you find one, let me know.
+
+.SH CAVEATS
+Some intervals of time are fixed and some are not.  Neither months nor years can be assigned a guaranteed number of seconds, due to leap years and the varying number of days per month (leap seconds and any smaller adjustments are ignored).  This could lead to unexpected behavior in the interpretation of certain sequences of time codes.  The thing to remember is that the amount of time containing a set number of seconds is computed and added before the months and years are added.  What that means is that the expiration date derived from the string "32dm" will be computed by adding 32 days to the current date, then adding one month to the result.  If the result of the first computation lands you in the middle of a month with 28 days, adding the one month will only add 28 days to the total.  The obvious solution is to stop being a weirdo and to not mix months with huge amounts of days.
+.P
+If you want your message to include exclamation points, there are two ways to do it.  First, you can enclose the whole message in single quotes (').  These will escape any metacharacters except for the closing quote--even a backslash.  This means that a message contained by single quotes cannot contain an apostrophe, which may be a problem.  If you want to include both exclamation marks and apostrophes, you will need to enclose your message with double quotes and escape each exclamation point with a backslash.  ms will delete one backslash from in front of every exclamation point it finds.  This could cause unexpected behavior in the rare event that your message includes the substring "\\!" and is enclosed with single quotes.  (The message stored would be "!" rather than "\\!").
+.P
+On a related note, you will also want to escape dollar signs.
+
+.SH AUTHOR
+This program was written and conceived by Charlie Pashayan of Wake Forest University (cmpashayan@triad.rr.com).
+
+
+
+
+
+
