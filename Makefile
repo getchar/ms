@@ -5,7 +5,7 @@ all: ms
 ms: src/main.c src/parsec.h src/msio.h src/msdefs.h src/msflags.h
 	$(CC) -o ms src/main.c -lm
 
-install:
+install: ms
 	cp ms /usr/bin
 	cp man/ms.6 /usr/share/man/man6
 
